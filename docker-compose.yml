@@ -1,0 +1,27 @@
+services:
+  culturarte: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: appCulturarte
+    depends_on:
+      - dbculturarte
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./IMG:/IMG
+      - /home/tecnologo/Escritorio:/hostDesktop:ro
+  dbculturarte:
+    image: mysql:8.0.17
+    container_name: BaseDatosC
+    environment:
+      MYSQL_DATABASE: Culturarte
+      MYSQL_ROOT_PASSWORD: tecnologo
+      MYSQL_PASSWORD: tecnologo
+      MYSQL_USER: tecnologo
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
