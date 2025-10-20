@@ -28,17 +28,14 @@ import logica.DTO.Estado;
 
 
 public class ManejadorUsuario {
-    private Map<String,Usuario> usuarios;
+   
     
     private static ManejadorUsuario instancia = null;
     private EntityManager em;
 
         
     private ManejadorUsuario() {
-
-        usuarios = new HashMap<String, Usuario>();
-        
-       
+  
     }
     
     public static ManejadorUsuario getInstance() {
@@ -65,56 +62,7 @@ public class ManejadorUsuario {
 
     }
     
-    //obengo la lista de usuario que siguen al usuario identificado por seguido
-    public List<DTOUsuario> obtenerSeguidores(String seguido){
-        em= PersistenciaManager.getEntityManager();
-        try{
-            //select count(*) from usuario_seguidos where seguidor='franco2' and seguido='mbusca';
-            List<DTOUsuario> usuarios=new ArrayList<>();
-            //esta consulta seria dame todos los usuario que en su lista seguidos es igual al pasado por parametro
-            String consulta = "SELECT u FROM Usuario u JOIN u.usuarioSeguido s " + 
-                      "WHERE  s.nickname = :seguido";
-            List<Usuario> u = em.createQuery(consulta, Usuario.class).setParameter("seguido", seguido).getResultList();
-            
-            for(Usuario usr:u){
-                DTOUsuario dtousr=new DTOUsuario();
-                dtousr.setNickname(usr.getNickname());
-                dtousr.setRutaImg(usr.getRutaImg());
-                if(usr instanceof Proponente){
-                    dtousr.setTipoUsr("Proponente");
-                }else{
-                    dtousr.setTipoUsr("Colaborador");
-                }
-                usuarios.add(dtousr);
-            }
-            return usuarios;
-
-        }finally{
-            em.close(); 
-        }
-    }
-    //compruebo si seguidor ya sigue a seguido 
-    public boolean sigue(String seguidor,String seguido){
-        em= PersistenciaManager.getEntityManager();
-        try{
-            //select count(*) from usuario_seguidos where seguidor='franco2' and seguido='mbusca';
-           
-            String consulta = "SELECT COUNT(s) FROM Usuario u JOIN u.usuarioSeguido s " + 
-                      "WHERE u.nickname = :seguidor AND s.nickname = :seguido";
-            
-            String consulta2="SELECT ";
-                      
-            Long count = em.createQuery(consulta, Long.class)
-                       .setParameter("seguidor", seguidor)
-                       .setParameter("seguido", seguido)
-                       .getSingleResult();
-            return count > 0;
-
-        }finally{
-            em.close(); 
-        }
     
-    }
     
     //devuelvo dtoUsuario con info minima de todos los usuarios cargados
     public List<DTOUsuario> getListDTOUsuario(){
@@ -177,6 +125,57 @@ public class ManejadorUsuario {
         }finally{
             em.close();
         }
+    }
+    
+    //obengo la lista de usuario que siguen al usuario identificado por seguido
+    public List<DTOUsuario> obtenerSeguidores(String seguido){
+        em= PersistenciaManager.getEntityManager();
+        try{
+            //select count(*) from usuario_seguidos where seguidor='franco2' and seguido='mbusca';
+            List<DTOUsuario> usuarios=new ArrayList<>();
+            //esta consulta seria dame todos los usuario que en su lista seguidos es igual al pasado por parametro
+            String consulta = "SELECT u FROM Usuario u JOIN u.usuarioSeguido s " + 
+                      "WHERE  s.nickname = :seguido";
+            List<Usuario> u = em.createQuery(consulta, Usuario.class).setParameter("seguido", seguido).getResultList();
+            
+            for(Usuario usr:u){
+                DTOUsuario dtousr=new DTOUsuario();
+                dtousr.setNickname(usr.getNickname());
+                dtousr.setRutaImg(usr.getRutaImg());
+                if(usr instanceof Proponente){
+                    dtousr.setTipoUsr("Proponente");
+                }else{
+                    dtousr.setTipoUsr("Colaborador");
+                }
+                usuarios.add(dtousr);
+            }
+            return usuarios;
+
+        }finally{
+            em.close(); 
+        }
+    }
+    //compruebo si seguidor ya sigue a seguido 
+    public boolean sigue(String seguidor,String seguido){
+        em= PersistenciaManager.getEntityManager();
+        try{
+            //select count(*) from usuario_seguidos where seguidor='franco2' and seguido='mbusca';
+           
+            String consulta = "SELECT COUNT(s) FROM Usuario u JOIN u.usuarioSeguido s " + 
+                      "WHERE u.nickname = :seguidor AND s.nickname = :seguido";
+            
+            String consulta2="SELECT ";
+                      
+            Long count = em.createQuery(consulta, Long.class)
+                       .setParameter("seguidor", seguidor)
+                       .setParameter("seguido", seguido)
+                       .getSingleResult();
+            return count > 0;
+
+        }finally{
+            em.close(); 
+        }
+    
     }
      //compruebo que existe un usuario identificado por nick
     public boolean existe(String nick){
@@ -333,21 +332,21 @@ public class ManejadorUsuario {
         }
         }
         
-    //elimino la colaboracion echa a propuesta por el usuario identificado por nick 
-    public void eliminarColaboracion(String nick,String propuesta){
-        Colaborador c=(Colaborador) usuarios.get(nick);
-        Colaboracion aux=null;
-            for(Colaboracion col: c.getColaboraciones()){
-               if(col.getPropuesta().getTitulo().equals(propuesta)){
-               aux=col;
-               break;
-            }
-        }
-            if(aux!=null){
-                c.getColaboraciones().remove(aux);
-            }
-
-        }
+//    //elimino la colaboracion echa a propuesta por el usuario identificado por nick 
+//    public void eliminarColaboracion(String nick,String propuesta){
+//        Colaborador c=(Colaborador) usuarios.get(nick);
+//        Colaboracion aux=null;
+//            for(Colaboracion col: c.getColaboraciones()){
+//               if(col.getPropuesta().getTitulo().equals(propuesta)){
+//               aux=col;
+//               break;
+//            }
+//        }
+//            if(aux!=null){
+//                c.getColaboraciones().remove(aux);
+//            }
+//
+//        }
     //operacion para seguir a usuario 
     public boolean seguirUsr(String nick1, String nick2){
         em = PersistenciaManager.getEntityManager();

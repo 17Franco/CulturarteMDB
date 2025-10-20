@@ -14,6 +14,7 @@ import java.util.Map;
 import logica.DTO.DTOProponente;
 import logica.Propuesta.Propuesta;
 
+
 @Entity
 public class Proponente extends Usuario{
     private String direccion;

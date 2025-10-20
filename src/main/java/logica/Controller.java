@@ -30,9 +30,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import persistencia.ManejadorUsuarioMongo;
 
 public class Controller  implements IController {
     private ManejadorUsuario mUsuario=ManejadorUsuario.getInstance();
+    private ManejadorUsuarioMongo mUsuarioMongo=ManejadorUsuarioMongo.getInstance();
     private ManejadorCategoria mCategoria=ManejadorCategoria.getInstance();
     private ManejadorPropuesta mPropuesta=ManejadorPropuesta.getinstance();
     private ManejadorColaboracion mColaboraciones = ManejadorColaboracion.getInstance();
@@ -43,10 +45,12 @@ public class Controller  implements IController {
     @Override
     public void altaUsuario(DTOUsuario usu) {
         if(usu instanceof DTOProponente){
-            mUsuario.addProponente((DTOProponente) usu);
+            mUsuarioMongo.addProponente((DTOProponente) usu);
         }else{
-            mUsuario.addColaborador((DTOColaborador) usu);
+            mUsuarioMongo.addColaborador((DTOColaborador) usu);
         }
+//        ManejadorUsuarioMongo mUsuarioMongo=ManejadorUsuarioMongo.getInstance();
+//        mUsuarioMongo.probarConexion();
     }
     
     
@@ -132,15 +136,16 @@ public class Controller  implements IController {
     }
     @Override
     public boolean existeUsuario(String nick, String email) {
-           return (mUsuario.existe(nick) || mUsuario.emailUsado(email));
+           //return false; 
+           return (mUsuarioMongo.existe(nick) || mUsuarioMongo.emailUsado(email));
     }
     
     public boolean emailUsado(String email){
-        return mUsuario.emailUsado(email);
+        return mUsuarioMongo.emailUsado(email);
     }
     
      public boolean existe(String nick){
-            return mUsuario.existe(nick);
+            return mUsuarioMongo.existe(nick);
     }
      
     @Override

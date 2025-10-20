@@ -1,8 +1,5 @@
 
 package logica.Usuario;
-
-//import  jakarta.persistence.*;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
@@ -17,10 +14,12 @@ import java.util.Map;
 import logica.Propuesta.Propuesta;
 import java.util.Iterator;
 
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
-    @Id
+    
+    @Id //solo por ahora para que funciones con bd relaciona o mongo
     private String nickname;
     private String pass;
     private String nombre;
@@ -47,11 +46,7 @@ public class Usuario {
     @MapKey(name = "Titulo") // asigna 
     private Map<String,Propuesta> propFavorita=new HashMap<>();
 
-    public String getPass() {
-        return pass;
-    }
-    
-    
+   
     public Usuario(){}
    
     public Usuario(String nickname, String nombre, String apellido, String email, LocalDate fecha, String rutaImg) {
@@ -77,6 +72,9 @@ public class Usuario {
         this.nickname = nickname;
     }
     
+    public String getPass() {
+        return pass;
+    }
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

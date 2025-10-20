@@ -11,53 +11,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.0</version>
-                <executions>
-                    <!-- JAR solo lógica/persistencia -->
-                    <execution>
-                        <id>logic-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            
-                            <classifier>logica</classifier>
-                            <includes>
-                                <include>logica/**</include>
-                                <include>persistencia/**</include>
-                                <include>META-INF/**</include>
-                            </includes>
-                            <excludes>
-                                <!-- no quiero los dto -->
-                                <exclude>logica/DTO/**</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                    <id>dto-jar</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>jar</goal>
-                    </goals>
-                    <configuration>
-                        <classifier>dto</classifier>
-                        <includes>
-                            <include>logica/DTO/**</include>
-                        </includes>
-                    </configuration>
-                </execution>
-                </executions>
             </plugin>
-             <!-- Coloco estas lineas porque no me deja hacer el jar con una version de java diferente -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <release>17</release>
-                </configuration>
-            </plugin>
-             <!-- fin arreglo java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -86,6 +40,12 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.1.1</version> 
+        </dependency>
+ 
+        <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE260</version>
@@ -106,4 +66,5 @@
         <maven.compiler.release>17</maven.compiler.release>
         <exec.mainClass>ui.Main</exec.mainClass>
     </properties>
+    <name>CulturarteMDB</name>
 </project>

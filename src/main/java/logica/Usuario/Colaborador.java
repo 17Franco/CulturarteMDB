@@ -10,10 +10,12 @@ import java.util.List;
 import logica.Colaboracion.Colaboracion;
 import logica.DTO.DTOColaborador;
 
+
 @Entity
 public class Colaborador extends Usuario{
     
-     @OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL)
+     
+    @OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL)
     private List<Colaboracion> colaboraciones= new ArrayList<>();
 
     public Colaborador() {
