@@ -18,7 +18,7 @@ public class PersistenciaMongo {
     private static MongoClient mongoClient = null; //guardo la conexion
     
     
-    
+    //usuario y pass deberia se leido por algun archivo de configuracion pero por ahora 
     public static MongoClient getConnection(String usuario, String pass) {
         if (mongoClient == null) { //la crea la primera ves luego devuelve la que existe
             String connectionString = "mongodb+srv://" + usuario + ":" + pass +"@culturartecrud.npauvta.mongodb.net/?retryWrites=true&w=majority&appName=CulturarteCRUD";
