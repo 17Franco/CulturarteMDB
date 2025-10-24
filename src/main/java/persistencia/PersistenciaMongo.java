@@ -9,47 +9,48 @@ import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 
 //clase que nos devuelve una conexion a la bd con user y pass para cada uno
 public class PersistenciaMongo {
     
-    //private static MongoClient mongoClient = null; //guardo la conexion
+    private static MongoClient mongoClient = null; //guardo la conexion
     
-    //devuelve la conexion a bd especificada
-    public static MongoClient getConetion(String user,String pass) {
-        
-        MongoClient mongoClient =Conection(user, pass); 
-        
+    
+    
+    public static MongoClient getConnection(String usuario, String pass) {
+        if (mongoClient == null) { //la crea la primera ves luego devuelve la que existe
+            String connectionString = "mongodb+srv://" + usuario + ":" + pass +"@culturartecrud.npauvta.mongodb.net/?retryWrites=true&w=majority&appName=CulturarteCRUD";
+
+            ConnectionString connStr = new ConnectionString(connectionString);
+
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(connStr)
+                    // Configuración del pool
+                    .applyToConnectionPoolSettings(builder -> builder
+                            .maxSize(50) // de conexiones simultáneas
+                            .minSize(5)  // conexiones que se mantienen abiertas
+                            .maxConnectionIdleTime(60, TimeUnit.SECONDS)
+                    )
+                    .serverApi(ServerApi.builder()
+                            .version(ServerApiVersion.V1)
+                            .build())
+                    .build();
+
+            mongoClient = MongoClients.create(settings);
+            //System.out.println("Conexión MongoDB inicializada con pool de conexiones.");
+        }
         return mongoClient;
     }
-    
-    //nos conecta al cluster de atlas usando user y pass diferentes
-    public static MongoClient Conection(String usuario,String pass){
-         
-        String connectionString = "mongodb+srv://" + usuario + ":" + pass +"@culturartecrud.npauvta.mongodb.net/?retryWrites=true&w=majority&appName=CulturarteCRUD";
 
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
-
-        //System.out.println("Conexión a MongoDB creada correctamente.");
-        
-        return MongoClients.create(settings);
+    // Método para cerrar todo el pool
+    public static void cerrar() {
+        if (mongoClient != null) {
+            mongoClient.close();
+            mongoClient = null;
+            //System.out.println("🔒Conexión MongoDB cerrada correctamente.");
+        }
     }
-    
-//     //metodo para cerrar la conexion 
-//     public static void cerrar(MongoClient conn) {
-//        if (conn != null) {
-//            conn.close();
-//            conn = null;
-//            System.out.println("🔒Conexión a MongoDB cerrada.");
-//        }
-//    }
     
 }

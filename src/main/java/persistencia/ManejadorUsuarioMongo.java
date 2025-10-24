@@ -67,7 +67,7 @@ public class ManejadorUsuarioMongo {
         
         try{
             
-            conn=PersistenciaMongo.getConetion("francoechaide_db_user","Hhn9xVioZZnm7bXk");//conexion al cluster
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");//conexion al cluster
             
             MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero
             
@@ -78,10 +78,6 @@ public class ManejadorUsuarioMongo {
             //System.out.println("Proponente insertado exitosamente.");
         }catch(Exception e){
             System.out.println("Error" +e.getMessage());
-        }finally{
-            if(conn!=null){
-                conn.close();//cierro conexion
-            }
         }
              
     }
@@ -108,7 +104,7 @@ public class ManejadorUsuarioMongo {
         colaboradorDocumento.append("Colaboraciones", new java.util.ArrayList<Document>()); 
         
         try{
-            conn=PersistenciaMongo.getConetion("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
             MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero
             
             MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");//establece la collecion con la que trabajare
@@ -118,10 +114,6 @@ public class ManejadorUsuarioMongo {
         }
         catch(Exception e){
             System.out.println("Error" +e.getMessage());    
-        }finally{
-            if(conn!=null){
-                conn.close();//cierro conexion
-            }
         }
     
     }
@@ -130,8 +122,8 @@ public class ManejadorUsuarioMongo {
     public boolean emailUsado(String email){
         MongoClient conn=null;
 
-        try{
-           conn=PersistenciaMongo.getConetion("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+        
+           conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
            
            MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero
 
@@ -140,18 +132,16 @@ public class ManejadorUsuarioMongo {
            Document documentoEncontrado = coleccionUsuarios.find(Filters.eq("email", email)).first();//me quedo con la primera que coicide (aunque al ser unico solo existe ese)
 
            return documentoEncontrado!=null;
-        }finally{
-           if(conn!=null){
-               conn.close();//cierro conexion
-           }
-        }
+        
+        
+        
     }
     
     //compruebo que existe un usuario identificado por nick
     public boolean existe(String nick){
         MongoClient conn=null;
       try{
-        conn=PersistenciaMongo.getConetion("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+        conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
         MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero
             
         MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");//establece la collecion con la que trabajare
@@ -159,9 +149,7 @@ public class ManejadorUsuarioMongo {
         
         return documentoEncontrado!=null;
       }finally{
-        if(conn!=null){
-            conn.close();//cierro conexion
-        }
+        
       }
     }
     
@@ -235,7 +223,7 @@ public class ManejadorUsuarioMongo {
         try{
   
             //Reliazo conexion
-            conn=PersistenciaMongo.getConetion("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
             
             MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero
             
@@ -259,9 +247,7 @@ public class ManejadorUsuarioMongo {
            }
            return resu;
         }finally{
-            if(conn!=null){
-                conn.close();//cierro conexion
-            }
+            
         }
     }
     
@@ -270,7 +256,7 @@ public class ManejadorUsuarioMongo {
         MongoClient conn=null;
 
         try{
-            conn=PersistenciaMongo.getConetion("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
 
             MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero 
 
@@ -281,9 +267,7 @@ public class ManejadorUsuarioMongo {
             return !documentoEncontrado.isEmpty() && "Proponente".equals(documentoEncontrado.getString("_id"));
 
         }finally{
-            if(conn!=null){
-                conn.close();//cierro conexion
-            } 
+            
         }
     }
     

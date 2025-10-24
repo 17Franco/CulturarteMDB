@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import persistencia.ManejadorUsuarioMongo;
+import persistencia.PersistenciaMongo;
 
 public class Controller  implements IController {
     private ManejadorUsuario mUsuario=ManejadorUsuario.getInstance();
@@ -143,7 +144,7 @@ public class Controller  implements IController {
     @Override
     public List<String> ListaUsuarios(){
         List<String> aux = new ArrayList<>();
-        for (DTOUsuario c : mUsuario.getUsuarios().values()){
+        for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
                 aux.add(c.getNickname());
         }
        return aux;    
@@ -582,6 +583,10 @@ public class Controller  implements IController {
         return Estado.formateoEstado(estado);
     }
     
+    @Override
+    public void cerrarAplicacion() {
+        PersistenciaMongo.cerrar();
+    }
 
 }
 

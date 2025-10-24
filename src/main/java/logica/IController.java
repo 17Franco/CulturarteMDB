@@ -122,4 +122,5 @@ public interface IController {
    int string_A_Int_Con_verificacion(String input);
    String formateoEstado(String estado);
    
+   public void cerrarAplicacion();
 }

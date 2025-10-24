@@ -16,6 +16,15 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         jMenu2.setVisible(false);
         setLocationRelativeTo(null);
+        
+        
+        // Detectar cuando la ventana se cierra
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                controller.cerrarAplicacion();  // Llamamos al método de cierre de la conexión MongoDB
+            }
+        });
     }
        
     
