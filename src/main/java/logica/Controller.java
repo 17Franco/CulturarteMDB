@@ -49,11 +49,9 @@ public class Controller  implements IController {
         }else{
             mUsuarioMongo.addColaborador((DTOColaborador) usu);
         }
-//        ManejadorUsuarioMongo mUsuarioMongo=ManejadorUsuarioMongo.getInstance();
-//        mUsuarioMongo.probarConexion();
     }
     
-    
+    //web
     public String obtenerPathImg(String nick,byte[] contenido,String nombreArchivo){
         if(!nombreArchivo.equals("")){
         String RUTA_IMAGENES = "/home/fran/Escritorio/Lab1PA/IMG"; //configurar en cada maquina o buscar solucion
@@ -76,12 +74,28 @@ public class Controller  implements IController {
         
         return "";    
     }
-    
+    //web
+    @Override
+    public byte[] getImg(String ruta) {
+        String RUTA_IMAGENES = "/home/fran/Escritorio/Lab1PA";
+        try{
+        File img=new File(RUTA_IMAGENES + File.separator +ruta);
+        if(!img.exists()) return null;
+        //byte[] img= new ;
+        
+            return Files.readAllBytes(img.toPath());//devuelve array de bytes de la img 
+        }catch(IOException i){
+            i.printStackTrace();
+            return null;
+        }
+    }
+    //web
     @Override
     public List<DTOUsuario> getSeguidores(String nick){
         return mUsuario.obtenerSeguidores(nick);
     }
     
+    //web
     @Override
     public void registroUsuario(String nickname, String pass, String nombre, String apellido, String email, LocalDate fecha, byte[] contenido,String nombreArchivo,boolean isProponente,String direccion,String web,String Biografia){
         String ruta = obtenerPathImg(nickname,contenido,nombreArchivo);
@@ -105,35 +119,7 @@ public class Controller  implements IController {
     
     return mUsuario.sigue(seguidor,Seguido);
     }
-    @Override
-    public byte[] getImg(String ruta) {
-        String RUTA_IMAGENES = "/home/fran/Escritorio/Lab1PA";
-        try{
-        File img=new File(RUTA_IMAGENES + File.separator +ruta);
-        if(!img.exists()) return null;
-        //byte[] img= new ;
-        
-            return Files.readAllBytes(img.toPath());//devuelve array de bytes de la img 
-        }catch(IOException i){
-            i.printStackTrace();
-            return null;
-        }
-    }
     
-    @Override
-    public List<DTOPropuesta> getFavoritas(String nick){
-        
-        return mUsuario.getFavoritas(nick);
-    
-    }
-    @Override
-    public boolean login(String nick,String Pass){
-        return mUsuario.verificarCredenciales(nick,Pass);
-    }
-    @Override
-    public boolean isProponente(String nick){
-        return mUsuario.isProponente(nick);
-    }
     @Override
     public boolean existeUsuario(String nick, String email) {
            //return false; 
@@ -283,6 +269,26 @@ public class Controller  implements IController {
     }
      //Fin de Devolucion de DTO
     
+     
+       
+    //web
+    @Override
+    public List<DTOPropuesta> getFavoritas(String nick){
+        
+        return mUsuario.getFavoritas(nick);
+    
+    }
+    
+    //web
+    @Override
+    public boolean login(String nick,String Pass){
+        return mUsuario.verificarCredenciales(nick,Pass);
+    }
+    //web
+    @Override
+    public boolean isProponente(String nick){
+        return mUsuarioMongo.isProponente(nick);
+    }
    
     @Override
     public void altaPropuesta(String Titulo, String Descripcion, String Imagen, String Lugar, LocalDate Fecha, int Precio, int MontoTotal,LocalDate fechaPublicacio, List<TipoRetorno> Retorno, String cat, String usr,Estado est) {

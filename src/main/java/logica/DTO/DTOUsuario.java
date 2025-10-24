@@ -17,8 +17,8 @@ public class DTOUsuario {
     private LocalDate fecha;
     private String rutaImg;
     private String tipoUsr;
-    //private List<String> usuarioSeguido=new ArrayList<>(); las saco porque si solicito la info no pongo todo dentro del dto
-    //private List<String> propFavorita=new ArrayList<>();      el dto es para manda info basica 
+    private List<String> usuarioSeguido=new ArrayList<>(); //las saco porque si solicito la info no pongo todo dentro del dto
+    private List<String> propFavorita=new ArrayList<>();     // el dto es para manda info basica 
 
     
     public DTOUsuario(){}

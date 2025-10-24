@@ -61,32 +61,7 @@ public class ManejadorUsuario {
         em.close();// cierro el manejador 
 
     }
-    
-    
-    
-    //devuelvo dtoUsuario con info minima de todos los usuarios cargados
-    public List<DTOUsuario> getListDTOUsuario(){
-         em= PersistenciaManager.getEntityManager();
-         List<DTOUsuario> usuarios=new ArrayList<>();
-        try{
-            List<Usuario> lista = em.createQuery("FROM Usuario", Usuario.class).getResultList();
-            for(Usuario u: lista){
-                DTOUsuario usr=new DTOUsuario();
-                usr.setNickname(u.getNickname());
-                usr.setRutaImg(u.getRutaImg());
-                if(u instanceof Proponente){
-                    usr.setTipoUsr("Proponente");
-                }else{
-                    usr.setTipoUsr("Colaborador");
-                }
-                usuarios.add(usr);
-            }
-            return usuarios;
-        }finally{
-            em.close();
-        }
-    
-    }
+
      //insertar un colaborador a la bd
      public void addColaborador(DTOColaborador u){
         Colaborador p=new Colaborador(u);
@@ -125,6 +100,30 @@ public class ManejadorUsuario {
         }finally{
             em.close();
         }
+    }
+    
+     //devuelvo dtoUsuario con info minima de todos los usuarios cargados
+    public List<DTOUsuario> getListDTOUsuario(){
+         em= PersistenciaManager.getEntityManager();
+         List<DTOUsuario> usuarios=new ArrayList<>();
+        try{
+            List<Usuario> lista = em.createQuery("FROM Usuario", Usuario.class).getResultList();
+            for(Usuario u: lista){
+                DTOUsuario usr=new DTOUsuario();
+                usr.setNickname(u.getNickname());
+                usr.setRutaImg(u.getRutaImg());
+                if(u instanceof Proponente){
+                    usr.setTipoUsr("Proponente");
+                }else{
+                    usr.setTipoUsr("Colaborador");
+                }
+                usuarios.add(usr);
+            }
+            return usuarios;
+        }finally{
+            em.close();
+        }
+    
     }
     
     //obengo la lista de usuario que siguen al usuario identificado por seguido

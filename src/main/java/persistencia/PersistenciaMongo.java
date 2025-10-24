@@ -38,7 +38,7 @@ public class PersistenciaMongo {
                 .serverApi(serverApi)
                 .build();
 
-        System.out.println("Conexión a MongoDB creada correctamente.");
+        //System.out.println("Conexión a MongoDB creada correctamente.");
         
         return MongoClients.create(settings);
     }
