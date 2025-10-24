@@ -585,7 +585,9 @@ public class Controller  implements IController {
     
     @Override
     public void cerrarAplicacion() {
+        //System.out.println("estoy cerrando controller");
         PersistenciaMongo.cerrar();
+        
     }
 
 }

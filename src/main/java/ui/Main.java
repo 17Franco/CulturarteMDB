@@ -18,13 +18,21 @@ public class Main extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         
-        // Detectar cuando la ventana se cierra
+        // Detectar cuando la ventana se cierra (no se donde se cerraria la ia me mando aca xd)
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
+                System.out.println("Cerrando Conexiones");
                 controller.cerrarAplicacion();  // Llamamos al método de cierre de la conexión MongoDB
+                System.exit(0);//no preguntar porque esto hace que cierre todas la conexiones
             }
         });
+        
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            controller.cerrarAplicacion();
+           
+        }));
     }
        
     
