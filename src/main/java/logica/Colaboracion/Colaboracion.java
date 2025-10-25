@@ -1,31 +1,44 @@
 package logica.Colaboracion;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import logica.DTO.DTOColaboracion;
 import logica.Propuesta.Propuesta;
 import logica.Usuario.Colaborador;
 import logica.DTO.TipoRetorno;
-import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
-@Entity
+@jakarta.persistence.Entity
+@Entity("colaboraciones")
 public class Colaboracion {
     
-         @Id
+        @jakarta.persistence.Id 
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Id
         private Long id;  
          
-         @Enumerated(EnumType.STRING)
+        @Enumerated(EnumType.STRING)
         private TipoRetorno tipoRetorno;
 
         private int monto;
         
         @ManyToOne
         @JoinColumn(name = "colaborador")
+        @Reference //solo id
         private Colaborador colaborador;
         
         @ManyToOne
         @JoinColumn(name = "propuesta")
+        @Reference //solo id
         private Propuesta propuesta;
 
         private LocalDate creado;

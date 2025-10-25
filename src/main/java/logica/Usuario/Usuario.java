@@ -1,8 +1,12 @@
 
 package logica.Usuario;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
+
+
+ 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
+
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -15,11 +19,13 @@ import logica.Propuesta.Propuesta;
 import java.util.Iterator;
 
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@jakarta.persistence.Entity
+@jakarta.persistence.Inheritance(strategy = InheritanceType.JOINED)
+@Entity("Usuarios")
 public class Usuario {
     
-    @Id //solo por ahora para que funciones con bd relaciona o mongo
+    @jakarta.persistence.Id //solo por ahora para que funciones con bd relaciona o mongo
+    @Id
     private String nickname;
     private String pass;
     private String nombre;
@@ -35,6 +41,7 @@ public class Usuario {
         inverseJoinColumns = @JoinColumn(name = "seguido")     // al que sigo
     )
     @MapKey(name = "nickname")
+    @Reference
     private Map<String,Usuario> usuarioSeguido=new HashMap<>();
     
     @ManyToMany
@@ -44,6 +51,7 @@ public class Usuario {
         inverseJoinColumns = @JoinColumn(name = "propuesta")     // la prop favorita
     )
     @MapKey(name = "Titulo") // asigna 
+    @Reference
     private Map<String,Propuesta> propFavorita=new HashMap<>();
 
    

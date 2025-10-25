@@ -1,8 +1,9 @@
 
 package logica.Usuario;
-
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Reference;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
+
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,11 +12,13 @@ import logica.Colaboracion.Colaboracion;
 import logica.DTO.DTOColaborador;
 
 
-@Entity
+@jakarta.persistence.Entity
+
 public class Colaborador extends Usuario{
     
      
     @OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL)
+    @Reference
     private List<Colaboracion> colaboraciones= new ArrayList<>();
 
     public Colaborador() {

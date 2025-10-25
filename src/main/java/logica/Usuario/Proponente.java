@@ -3,8 +3,9 @@ package logica.Usuario;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Reference;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import jakarta.persistence.MapKey;
 import jakarta.persistence.OneToMany;
@@ -15,7 +16,8 @@ import logica.DTO.DTOProponente;
 import logica.Propuesta.Propuesta;
 
 
-@Entity
+@jakarta.persistence.Entity
+
 public class Proponente extends Usuario{
     private String direccion;
     
@@ -25,7 +27,8 @@ public class Proponente extends Usuario{
     private String webSite;
     
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, orphanRemoval = true)
-    @MapKey(name = "Titulo")  
+    @MapKey(name = "Titulo") 
+    @Reference(lazy = true)
     private Map<String,Propuesta> propCreadas=new HashMap<>();
 
     public Proponente() {

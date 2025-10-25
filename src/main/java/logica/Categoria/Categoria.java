@@ -1,23 +1,33 @@
 package logica.Categoria;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import logica.DTO.DTOCategoria;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;
-import jakarta.persistence.*;
 
-@Entity
 
+@jakarta.persistence.Entity
+@Entity("Categoria")
 public class Categoria 
 {
-
+    @jakarta.persistence.Id 
     @Id
     @Column(columnDefinition = "VARCHAR(255) COLLATE utf8_bin")   //Esto es para que me distinga mayusculas y minúsculas, solo sirve si aun no se ha creado la db
     private String nombreCategoria;
     @ManyToOne
     @JoinColumn(name = "categoria_padre") // crea columna fk en tabla categoria
+    @Reference
     private Categoria catPadre; // pongo esto para que JPA MAPE ese atributo que es la fk categoria /catpadre   esa seria las columnas 
 
     @OneToMany(mappedBy = "catPadre", cascade = CascadeType.ALL)
+    @Reference
     private Set<Categoria> subcategorias;
 
 

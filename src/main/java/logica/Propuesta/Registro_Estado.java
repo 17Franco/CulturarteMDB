@@ -1,15 +1,19 @@
 package logica.Propuesta;
-import jakarta.persistence.Entity;
+
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
 import java.time.LocalDate;
 import logica.DTO.Estado;
 
-@Entity
+@jakarta.persistence.Entity
+@Entity("Registro_Estado")
 public class Registro_Estado {
+    @jakarta.persistence.Id 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

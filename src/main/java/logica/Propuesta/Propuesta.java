@@ -1,14 +1,17 @@
 package logica.Propuesta;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
@@ -26,8 +29,10 @@ import logica.Colaboracion.Colaboracion;
 import logica.DTO.DTORegistro_Estado;
 import logica.DTO.Estado;
 
-@Entity
+@jakarta.persistence.Entity
+@Entity("Propuesta")
 public class Propuesta {
+    @jakarta.persistence.Id 
     @Id
     private String Titulo;
     @Column(length = 2000)
@@ -54,19 +59,23 @@ public class Propuesta {
     private List<TipoRetorno> Retorno = new ArrayList<>();//guardo los retornos soportados
     
     @ManyToOne
-    @JoinColumn(name = "categoria") 
+    @JoinColumn(name = "categoria")
+    @Reference
     private Categoria cat;
     
     @ManyToOne
     @JoinColumn(name = "proponente")
+    @Reference
     private Proponente usr;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     @JoinColumn(name = "propuesta") // FK en la tabla registro_estado
     @OrderBy("id DESC") //Orden de más nuevo a más antiguo
+    @Reference
     private List<Registro_Estado> historialEstados = new ArrayList<>();
     
     @OneToMany(mappedBy = "propuesta", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @Reference
     private List<Colaboracion> Aporte= new ArrayList<>();// se guarda los aportes que a recibido la propuesta 
             
     public Propuesta(){}
