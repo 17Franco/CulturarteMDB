@@ -43,7 +43,7 @@ public class Usuario {
 //        inverseJoinColumns = @JoinColumn(name = "seguido")     // al que sigo
 //    )
 //    @MapKey(name = "nickname")
-    @Reference(lazy=false)
+    @Reference(lazy=true) //carga perezosa evita bucle al traer y mapear objeto entero (solo trae referenci hasta que le digamos getusuarioSeguidos)
     private Map<String,Usuario> usuarioSeguido=new HashMap<>();
     
 //    @ManyToMany
@@ -53,7 +53,7 @@ public class Usuario {
 //        inverseJoinColumns = @JoinColumn(name = "propuesta")     // la prop favorita
 //    )
 //    @MapKey(name = "Titulo") // asigna 
-    @Reference(lazy=false)
+    @Reference(lazy=true)
     private Map<String,Propuesta> propFavorita=new HashMap<>();
 
    

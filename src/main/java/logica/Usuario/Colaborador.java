@@ -18,7 +18,7 @@ public class Colaborador extends Usuario{
     
      
     @OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL)
-    @Reference(lazy = false)
+    @Reference(lazy=true)
     private List<Colaboracion> colaboraciones= new ArrayList<>();
 
     public Colaborador() {

@@ -28,7 +28,7 @@ public class Proponente extends Usuario{
     
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, orphanRemoval = true)
     @MapKey(name = "Titulo") 
-    @Reference(lazy = false)
+    @Reference(lazy=true)
     private Map<String,Propuesta> propCreadas=new HashMap<>();
 
     public Proponente() {

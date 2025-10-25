@@ -25,102 +25,140 @@ import logica.DTO.TipoRetorno;
 public interface IController {
     //Usuarios
     void altaUsuario(DTOUsuario usu);
-    void registroUsuario(String nickname, String pass, String nombre, String apellido, String email, LocalDate fecha, byte[] contenido,String nombreArchivo,boolean isProponente,String direccion,String web,String Biografia);
+    
     boolean existeUsuario(String nick, String email);
     
     boolean emailUsado(String email);
-    boolean login(String nick,String Pass);
-    boolean existe(String nick);
     
-    boolean isProponente(String nick);
+    boolean login(String nick,String Pass);
+    
+    boolean existe(String nick);
+      
     List<String> ListaUsuarios();
     
-    byte[] getImg(String ruta) ;
     List<String> ListaProponentes();
     
     List<String> ListaColaborador();
-    List<DTOUsuario> ListaDTOUsuarios();
-    void marcarComoFavorita(String nickname, String tituloPropuesta);
-    
-    void quitarFavorita(String nickname, String tituloPropuesta);
-    
-    boolean esFavorita(String nickname, String tituloPropuesta);
     
     List<DTOColaboracion>  colaboraciones(String nick);
-    boolean sigueAUsuario(String seguidor,String Seguido);
-   
-    List<String>ListaSeguidosPorUsuario(String nick);
     
-    List<DTOUsuario>Seguidos(String nick);
+    List<String>ListaSeguidosPorUsuario(String nick);
     
     DTOProponente getDTOProponente(String nick);
     
     DTOColaborador getDTOColaborador(String nick);
     
     List<String> colaboradoresAPropuesta(String titulo);
+    
     boolean seguir(String nick1,String nick2);
-    List<DTOUsuario> getSeguidores(String nick);
+    
     boolean unFollowUser(String usuarioActual, String usuarioToUnfollow);
+    
     Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick);
+    
+    
+    //SON DE WEB (OTRO PROYECTO NO SE USAN ACA)
+    void registroUsuario(String nickname, String pass, String nombre, String apellido, String email, LocalDate fecha, byte[] contenido,String nombreArchivo,boolean isProponente,String direccion,String web,String Biografia);
+    
+    boolean isProponente(String nick);
+    
+    List<DTOPropuesta> getFavoritas(String nick);
+    
+    List<DTOUsuario> getSeguidores(String nick);
+    
+    List<DTOUsuario>Seguidos(String nick);
+    
+    boolean sigueAUsuario(String seguidor,String Seguido);
+    
+    void marcarComoFavorita(String nickname, String tituloPropuesta);
+    
+    void quitarFavorita(String nickname, String tituloPropuesta);
+    
+    boolean esFavorita(String nickname, String tituloPropuesta);
+    
+    List<DTOUsuario> ListaDTOUsuarios();
+
+    //Fin SON DE WEB (OTRO PROYECTO NO SE USAN ACA)
+    
     //Fin Usuario
     
     //Propuestas
     void altaPropuesta(String Titulo, String Descripcion, String Imagen, String Lugar, LocalDate Fecha, int Precio, int MontoTotal, LocalDate fechaPublicacio,List<TipoRetorno> Retorno, String cat, String usr,Estado est);
     void modificarPropuesta(String titulo, String descripcion, String rutaImagen, String lugar, LocalDate fechaEvento,int precio, int montoTotal, List<TipoRetorno> retorno, String categoria, String usuarios, Estado estado);
+    
     boolean existeProp(String Titulo);
     
     Set<DTOPropuesta> obtenerPropuestas(String estado);
     
-    Set<DTOPropuesta> obtenerPropuestasExceptoINGRESADAS();
-    
     DTOPropuesta getPropuestaDTO(String propuestaSel);
     
-    int accionSobrePropuesta(String nickUsuario, DTOPropuesta propuestaSel);
+    Set<DTOPropuesta> ListarPropuestas(String estado1, String estado2);
     
     String creadorPropuesta(String titulo);
     
     String estadoPropuestas(String titulo);
     
+    
+    //SON DE WEB (OTRO PROYECTO NO SE USAN ACA)
+    Set<DTOPropuesta> obtenerPropuestasExceptoINGRESADAS();
+    
     int extenderOCancelarPropuesta(String accionUsuario,String tituloPropuesta);
     
     boolean nuevoComentario(String comentario,String userNick,String tituloPropuesta);
-
+    
     int accionesSobrePropuesta(String userNick, int permisos, String accionUsuario,String comentario, DTOPropuesta propuestaActual, String montoStr, String tipoRetorno);
-
+    
+    
     int permisosSobrePropuesta(String userNick, String tipoUsuario, DTOPropuesta propuestaActual);
+    
+    
+    int accionSobrePropuesta(String nickUsuario, DTOPropuesta propuestaSel);
+    //FIN SON DE WEB (OTRO PROYECTO NO SE USAN ACA)
     
     //Fin Propuesta
     
     //Categoria
     boolean altaDeCategoria(DTOCategoria categoriaIngresada);
+    
     List<DTOCategoria> getCategorias();
+    
+    //WEB
     List<String> ListaCategoria();
+    
     //Fin Categoria
     
-    //cu Registrar colaboracion a Propuesta
-    Set<DTOPropuesta> ListarPropuestas(String estado1, String estado2);
-    List<DTOPropuesta> getFavoritas(String nick);
+    //COLABORACION
     void altaColaboracion(DTOColaboracion colaboracion); 
-    boolean colaboracionExiste(String colaborador, String titulo);
-    int  getMontoRecaudado(String titulo);
-    // cu Consulta de colaboracion a Propuesta
-    Set<DTOColaborador> ListarColaboradres();
     
-    // cu cancelar Colaboracion a Propuesta
-    void CancelarColaboracion(Long id);    
-   Set<DTOColaboracion> getDTOColaboraciones();
+    boolean colaboracionExiste(String colaborador, String titulo);
+    
+    int  getMontoRecaudado(String titulo);
+
+    
+    void CancelarColaboracion(Long id);  
+    
+    Set<DTOColaboracion> getDTOColaboraciones();
+    //Fin COLABORACION
+    
+    //CARGA DE DATOS
+    void cargarDatosPruebaProponente();
+    
+    void cargarDatosPruebaColaborador();
+    
+    void cargarSeguidos();
+
+    void cargarPropuesta();
+    
+    void cargarCategorias();
+    
+    void cargarColaboraciones();
+    //FIN CARGA DE DATOS
+    
+    //verificaciones y auxiliares
+    //WEB
+    int string_A_Int_Con_verificacion(String input);
+    //WEB
+    String formateoEstado(String estado);
    
-   void cargarDatosPruebaProponente();
-   void cargarDatosPruebaColaborador();
-   void cargarSeguidos();
-   
-   void cargarPropuesta();
-   void cargarCategorias();
-   void cargarColaboraciones();
-   
-   //verificaciones y auxiliares
-   int string_A_Int_Con_verificacion(String input);
-   String formateoEstado(String estado);
-   
-   public void cerrarAplicacion();
+    public void cerrarAplicacion();
 }

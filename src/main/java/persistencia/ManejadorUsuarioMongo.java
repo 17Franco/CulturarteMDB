@@ -17,15 +17,22 @@ import dev.morphia.query.filters.Filters;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import java.util.Map;
+import java.util.Set;
 
 import java.util.TimeZone;
+import logica.Colaboracion.Colaboracion;
+import logica.DTO.DTOColaboracion;
 import logica.DTO.DTOColaborador;
 
 import logica.DTO.DTOProponente;
+import logica.DTO.DTOPropuesta;
 
 import logica.DTO.DTOUsuario;
+import logica.DTO.Estado;
+import logica.Propuesta.Propuesta;
 
 import logica.Usuario.Colaborador;
 import logica.Usuario.Proponente;
@@ -288,100 +295,60 @@ public class ManejadorUsuarioMongo {
             return false;
         }
     }
+     
+    //obtengo la info minima de la propuestas creadas de un proponente 
+    public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
+            
+           
+        Set<DTOPropuesta> resu=new HashSet<>();
+        try{
+            Datastore datastore = PersistenciaMongo.getDatastore("francoechaide_db_user", "Hhn9xVioZZnm7bXk");
+            Proponente p = (Proponente) buscarUsuarioPorNick(datastore, nick);
+            DTOProponente dtoProp=new DTOProponente(p);
+            for(Propuesta prop: p.getPropCreadas().values()){
+                Estado aux=prop.getHistorialEstados().get(0).getEstado();
+                DTOPropuesta dtoP=new DTOPropuesta(prop,dtoProp);
+                dtoP.setEstadoAct(aux);
+                resu.add(dtoP);
+            }
+            return resu;
+        }catch (MongoSocketException e) {
+            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
+            return resu;//mejorar si devuelvo el usuario no sabe si funciona o no
+        } catch (Exception e) {
+
+            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
+            return resu;
+        }
+        
+    }
     
-//     devuelvo dtoUusario con la info minima de los que sigue el usuario identificado por nick (se usa en el CulturarteWeb)
-//    public List<DTOUsuario> getSeguidos(String nick){
-//         List<DTOUsuario> listSeguidos=new ArrayList<>();
-//         MongoClient conn=null;
-//        
-//         try {
-//            pido conexion
-//            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
-//            traigo la bd que quiero 
-//            MongoDatabase database=conn.getDatabase("Culturarte");
-//            establece la collecion con la que trabajare
-//            MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");
-//            
-//            no traigo todo solo el campo seguido del usuario identificado por nick
-//            Document documentoEncontrado = coleccionUsuarios.find(Filters.eq("_id", nick)).projection(Projections.include("UsuarioSeguidos")).first();
-//            
-//            verifico que se encuentre el usuario
-//            if (documentoEncontrado != null) {
-//                
-//                List<String> usuariosSeguidos = documentoEncontrado.getList("UsuarioSeguidos", String.class);
-//                
-//                si sigue a otros usuarioos quiero recorrer la lista
-//                if(usuariosSeguidos!=null && !usuariosSeguidos.isEmpty()){
-//                    me traigo en una consulta los documentos de Usuarios seguidos
-//                    coleccionUsuarios.find(Filters.in("_id", usuariosSeguidos)).forEach(usuSeguido -> {
-//                        if ("Proponente".equals(usuSeguido.getString("tipo_usuario"))) {
-//                            listSeguidos.add(documentToDtoProponente(usuSeguido));
-//                        } else if ("Colaborador".equals(usuSeguido.getString("tipo_usuario"))) {
-//                            listSeguidos.add(documentToDtoColaborador(usuSeguido));
-//                        }
-//                    });
-//                }
-//            }
-//            return listSeguidos;
-//         }catch (MongoSocketException e) {
-//            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
-//            return listSeguidos;//mejorar si devuelvo el usuario no sabe si funciona o no
-//        } catch (Exception e) {
-//            
-//            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
-//            return listSeguidos;
-//        }
-//    }
-//    
-//       
-//    devuelvo si es proponente o no
-//    public boolean isProponente(String nick){
-//        MongoClient conn=null;
-//
-//        try{
-//            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
-//
-//            MongoDatabase database=conn.getDatabase("Culturarte");//traigo la bd que quiero 
-//
-//            MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");//establece la collecion con la que trabajare
-//
-//            Document documentoEncontrado =coleccionUsuarios.find(Filters.eq("_id", nick)).first();//me quedo con la primera que coicide (aunque al ser unico solo existe ese)
-//
-//            return !documentoEncontrado.isEmpty() && "Proponente".equals(documentoEncontrado.getString("tipo_usuario"));
-//
-//        }catch (MongoSocketException e) {
-//            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
-//            return false; 
-//        } catch (Exception e) {
-//            
-//            System.err.println("ERROR INESPERADO al averiguar el tipo de Usuario" +e.getMessage());
-//            return false; 
-//        }
-//    }
-//    
-        //    
-//    obtengo la info minima de la propuestas creadas de un proponente 
-//    public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
-//            em = PersistenciaManager.getEntityManager();
-//               Proponente  p=em.find(Proponente.class,nick);
-//           Set<DTOPropuesta> resu=new HashSet<>();
-//            try{
-//                DTOProponente dtoProp=new DTOProponente(p);
-//                for(Propuesta prop: p.getPropCreadas().values()){
-//                    Estado aux=prop.getHistorialEstados().get(0).getEstado();
-//                    DTOPropuesta dtoP=new DTOPropuesta(prop,dtoProp);
-//                    dtoP.setEstadoAct(aux);
-//                    resu.add(dtoP);
-//                }
-//                return resu;
-//            }finally{
-//                em.close();
-//            }
-//        return resu;
-//    }
-//    
-//    
-//    
+    //devuelve una lista de las  dto colaboraciones que son de un usuario identificado por nick
+    public List<DTOColaboracion> getDTOColaboraciones(String nick){
+         //List<DTOColaboracion> resu=new ArrayList<>();
+        
+        List<DTOColaboracion> resu=new ArrayList<>();
+        try{
+            Datastore datastore = PersistenciaMongo.getDatastore("francoechaide_db_user", "Hhn9xVioZZnm7bXk");
+            Colaborador c = (Colaborador) buscarUsuarioPorNick(datastore, nick);
+             for(Colaboracion colab: c.getColaboraciones()){
+               
+                DTOColaboracion DTOColab = new DTOColaboracion(colab);
+                resu.add(DTOColab);
+            }
+            return resu;
+        }catch (MongoSocketException e) {
+            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
+            return resu;//mejorar si devuelvo el usuario no sabe si funciona o no
+        } catch (Exception e) {
+
+            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
+            return resu;
+        }
+    }
+    
+    
+    
  
 }
     
