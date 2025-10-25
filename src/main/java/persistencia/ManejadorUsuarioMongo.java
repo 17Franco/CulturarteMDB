@@ -8,6 +8,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Updates;
+import static com.mongodb.client.model.Updates.pull;
+import com.mongodb.client.result.UpdateResult;
 import jakarta.persistence.EntityTransaction;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -403,10 +407,10 @@ public class ManejadorUsuarioMongo {
     }
     
     //obtengo la info minima de la propuestas creadas de un proponente 
-        public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
+    public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
 //            em = PersistenciaManager.getEntityManager();
 //               Proponente  p=em.find(Proponente.class,nick);
-               Set<DTOPropuesta> resu=new HashSet<>();
+           Set<DTOPropuesta> resu=new HashSet<>();
 //            try{
 //                DTOProponente dtoProp=new DTOProponente(p);
 //                for(Propuesta prop: p.getPropCreadas().values()){
@@ -419,8 +423,159 @@ public class ManejadorUsuarioMongo {
 //            }finally{
 //                em.close();
 //            }
-            return resu;
+        return resu;
+    }
+    
+    
+    
+    //devuelvo solo los nick de los seguidos del usuario identificado por nick
+    public List<String> listaSeguidos(String nick){
+        MongoClient conn=null;
+        List<String> aux = new ArrayList<>();
+        try{
+            //pido conexion
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+            //traigo la bd que quiero 
+            MongoDatabase database=conn.getDatabase("Culturarte");
+            //establece la collecion con la que trabajare
+            MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");
+            
+            //no traigo todo solo el campo seguido del usuario identificado por nick
+            Document documentoEncontrado = coleccionUsuarios.find(Filters.eq("_id", nick)).projection(Projections.include("UsuarioSeguidos")).first();
+            
+            //verifico que se encuentre el usuario
+            if (documentoEncontrado != null) {
+                aux = documentoEncontrado.getList("UsuarioSeguidos", String.class);
+            }
+            return aux;
+        }catch (MongoSocketException e) {
+            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
+            return aux;//mejorar si devuelvo el usuario no sabe si funciona o no
+        } catch (Exception e) {
+            
+            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
+            return aux;
         }
+
+    }
+    
+    public boolean seguirUsr(String nick1, String nick2){
+        if (nick1.equals(nick2)) return false;
+        MongoClient conn=null;
+        
+        try{
+            //pido conexion
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+            //traigo la bd que quiero 
+            MongoDatabase database=conn.getDatabase("Culturarte");
+            //establece la collecion con la que trabajare
+            MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");
+
+            Document usuario2 = coleccionUsuarios.find(Filters.eq("_id", nick2)).projection(Projections.include("_id")).first();
+            
+            if (usuario2 == null) {
+            
+                return false; 
+            }
+            
+            UpdateResult result = coleccionUsuarios.updateOne(
+            Filters.eq("_id", nick1), 
+            //anade el usuario solo si no lo  sigue ya 
+            Updates.addToSet("UsuarioSeguidos", nick2)
+            );
+            
+            
+            return result.getModifiedCount() == 1;
+
+        }catch (MongoSocketException e) {
+            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
+            return false;//mejorar si devuelvo el usuario no sabe si funciona o no
+        } catch (Exception e) {
+            
+            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
+            return false;
+        }
+
+    }
+    
+    //operacion para dejar de seguir a usuario
+    public boolean dejarDeSeguirUsuario(String nick1,String nick2){
+         if (nick1.equals(nick2)) return false;
+        MongoClient conn=null;
+        
+        try{
+            //pido conexion
+            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+            //traigo la bd que quiero 
+            MongoDatabase database=conn.getDatabase("Culturarte");
+            //establece la collecion con la que trabajare
+            MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");
+
+            
+            
+            UpdateResult result = coleccionUsuarios.updateOne(
+            Filters.eq("_id", nick1), 
+            //anade el usuario solo si no lo  sigue ya 
+            pull("UsuarioSeguidos", nick2)
+            );
+            
+            
+            return result.getModifiedCount() == 1;
+
+        }catch (MongoSocketException e) {
+            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
+            return false;//mejorar si devuelvo el usuario no sabe si funciona o no
+        } catch (Exception e) {
+            
+            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
+            return false;
+        }
+    }
+//    // devuelvo dtoUusario con la info minima de los que sigue el usuario identificado por nick (se usa en el CulturarteWeb)
+//    public List<DTOUsuario> getSeguidos(String nick){
+//         List<DTOUsuario> listSeguidos=new ArrayList<>();
+//         MongoClient conn=null;
+//        
+//         try {
+//            //pido conexion
+//            conn=PersistenciaMongo.getConnection("francoechaide_db_user","Hhn9xVioZZnm7bXk");
+//            //traigo la bd que quiero 
+//            MongoDatabase database=conn.getDatabase("Culturarte");
+//            //establece la collecion con la que trabajare
+//            MongoCollection<Document> coleccionUsuarios = database.getCollection("Usuarios");
+//            
+//            //no traigo todo solo el campo seguido del usuario identificado por nick
+//            Document documentoEncontrado = coleccionUsuarios.find(Filters.eq("_id", nick)).projection(Projections.include("UsuarioSeguidos")).first();
+//            
+//            //verifico que se encuentre el usuario
+//            if (documentoEncontrado != null) {
+//                
+//                List<String> usuariosSeguidos = documentoEncontrado.getList("UsuarioSeguidos", String.class);
+//                
+//                //si sigue a otros usuarioos quiero recorrer la lista
+//                if(usuariosSeguidos!=null && !usuariosSeguidos.isEmpty()){
+//                    //me traigo en una consulta los documentos de Usuarios seguidos
+//                    coleccionUsuarios.find(Filters.in("_id", usuariosSeguidos)).forEach(usuSeguido -> {
+//                        if ("Proponente".equals(usuSeguido.getString("tipo_usuario"))) {
+//                            listSeguidos.add(documentToDtoProponente(usuSeguido));
+//                        } else if ("Colaborador".equals(usuSeguido.getString("tipo_usuario"))) {
+//                            listSeguidos.add(documentToDtoColaborador(usuSeguido));
+//                        }
+//                    });
+//                }
+//            }
+//            return listSeguidos;
+//         }catch (MongoSocketException e) {
+//            System.err.println("🚨 ERROR DE CONEXIÓN: No se pudo conectar a la base de datos Culturarte.");
+//            return listSeguidos;//mejorar si devuelvo el usuario no sabe si funciona o no
+//        } catch (Exception e) {
+//            
+//            System.err.println("ERROR INESPERADO al buscar los seguidos Del Usuario." +e.getMessage());
+//            return listSeguidos;
+//        }
+//    }
+    
+   
  
 }
     

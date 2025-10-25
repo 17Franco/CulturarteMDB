@@ -100,30 +100,6 @@ public class Controller  implements IController {
      }
      
      @Override
-    public List<DTOUsuario>Seguidos(String nick){
-    
-        return mUsuario.getSeguidos(nick);
-    }
-    
-    @Override
-    public List<String> ListaSeguidosPorUsuario(String nick){
-
-        return mUsuario.listaSeguidos(nick);
-    }
-   
-    @Override
-    public boolean seguir(String nick1,String nick2){
-
-        return mUsuario.seguirUsr(nick1,nick2);
-
-    }
-     @Override
-     public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
-     {
-        return mUsuario.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
-     }
-
-    @Override
     //me crea un dtoProponente datos basicos
     public DTOProponente getDTOProponente(String nick) { 
         Proponente usr= (Proponente) mUsuarioMongo.getUsuario(nick);
@@ -142,6 +118,25 @@ public class Controller  implements IController {
            return resu;
     }
     
+    
+    @Override
+    public List<String> ListaSeguidosPorUsuario(String nick){
+
+        return mUsuarioMongo.listaSeguidos(nick);
+    }
+   
+    @Override
+    public boolean seguir(String nick1,String nick2){
+
+        return mUsuarioMongo.seguirUsr(nick1,nick2);
+
+    }
+    @Override
+    public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
+    {
+       return mUsuarioMongo.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
+    }
+ 
     @Override
     public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
 
@@ -245,6 +240,12 @@ public class Controller  implements IController {
     @Override
     public List<DTOUsuario> getSeguidores(String nick){
         return mUsuario.obtenerSeguidores(nick);
+    }
+    
+    //web
+    @Override
+    public List<DTOUsuario>Seguidos(String nick){
+        return mUsuario.getSeguidos(nick);
     }
     
     //web
