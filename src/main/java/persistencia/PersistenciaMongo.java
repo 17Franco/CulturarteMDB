@@ -43,8 +43,8 @@ public class PersistenciaMongo {
                     .applyConnectionString(connStr)
                     // Configuración del pool
                     .applyToConnectionPoolSettings(builder -> builder
-                            .maxSize(10) // de conexiones simultáneas
-                            .minSize(5)  // conexiones que se mantienen abiertas
+                            .maxSize(20) // de conexiones simultáneas
+                            .minSize(1)  // conexiones que se mantienen abiertas
                             .maxConnectionIdleTime(60, TimeUnit.SECONDS)
                     )
                     .serverApi(ServerApi.builder()
@@ -72,8 +72,8 @@ public class PersistenciaMongo {
 //            morphia.getMapper().map(Categoria.class);
 //            morphia.getMapper().map(Registro_Estado.class);
 
-            datastore = morphia; // Asigna el Datastore
-            datastore.ensureIndexes();  // Opcional, asegura que los índices sean creados
+            datastore = morphia; 
+            
         }
         return datastore;
     }

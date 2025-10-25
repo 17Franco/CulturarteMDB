@@ -55,22 +55,22 @@ public class Controller  implements IController {
     
     @Override
     public boolean existeUsuario(String nick, String email) {
-           return false; 
-           //return (mUsuarioMongo.existe(nick) || mUsuarioMongo.emailUsado(email));
+           //return false; 
+           return (mUsuarioMongo.existe(nick) || mUsuarioMongo.emailUsado(email));
     }
     
     public boolean emailUsado(String email){
-        return mUsuario.emailUsado(email);
+        return mUsuarioMongo.emailUsado(email);
     }
     
      public boolean existe(String nick){
-            return mUsuario.existe(nick);
+            return mUsuarioMongo.existe(nick);
     }
     
     @Override
     public List<String> ListaUsuarios(){
         List<String> aux = new ArrayList<>();
-        for (DTOUsuario c : mUsuario.getUsuarios().values()){
+        for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
                 aux.add(c.getNickname());
         }
        return aux;    
@@ -80,7 +80,7 @@ public class Controller  implements IController {
     @Override
      public List<String> ListaProponentes(){
          List<String> aux = new ArrayList<>();
-         for (DTOUsuario c : mUsuario.getUsuarios().values()){
+         for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
             if (c instanceof DTOProponente){
                  aux.add(c.getNickname());
             }
@@ -91,7 +91,7 @@ public class Controller  implements IController {
      @Override
      public List<String> ListaColaborador(){
          List<String> aux = new ArrayList<>();
-         for (DTOUsuario c : mUsuario.getUsuarios().values()){
+         for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
             if (c instanceof DTOColaborador){
                  aux.add(c.getNickname());
             }
@@ -102,7 +102,7 @@ public class Controller  implements IController {
      @Override
     //me crea un dtoProponente datos basicos
     public DTOProponente getDTOProponente(String nick) { 
-        Proponente usr= (Proponente) mUsuario.getUsuario(nick);
+        Proponente usr= (Proponente) mUsuarioMongo.getUsuario(nick);
         DTOProponente resu=null;
         if(usr!=null){
             resu=new DTOProponente(usr);
@@ -112,7 +112,7 @@ public class Controller  implements IController {
     
     @Override
      public DTOColaborador getDTOColaborador(String nick) { 
-           Colaborador usr= (Colaborador) mUsuario.getUsuario(nick);
+           Colaborador usr= (Colaborador) mUsuarioMongo.getUsuario(nick);
            DTOColaborador resu=new DTOColaborador(usr);
 
            return resu;
@@ -122,19 +122,19 @@ public class Controller  implements IController {
     @Override
     public List<String> ListaSeguidosPorUsuario(String nick){
 
-        return mUsuario.listaSeguidos(nick);
+        return mUsuarioMongo.listaSeguidos(nick);
     }
    
     @Override
     public boolean seguir(String nick1,String nick2){
 
-        return mUsuario.seguirUsr(nick1,nick2);
+        return mUsuarioMongo.seguirUsr(nick1,nick2);
 
     }
     @Override
     public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
     {
-       return mUsuario.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
+       return mUsuarioMongo.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
     }
  
     @Override

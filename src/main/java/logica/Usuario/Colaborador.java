@@ -13,12 +13,12 @@ import logica.DTO.DTOColaborador;
 
 
 @jakarta.persistence.Entity
-
+@Entity
 public class Colaborador extends Usuario{
     
      
     @OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL)
-    @Reference
+    @Reference(lazy = false)
     private List<Colaboracion> colaboraciones= new ArrayList<>();
 
     public Colaborador() {

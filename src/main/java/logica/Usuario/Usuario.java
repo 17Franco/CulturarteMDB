@@ -5,6 +5,7 @@ package logica.Usuario;
  
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Property;
 import dev.morphia.annotations.Reference;
 
 import jakarta.persistence.InheritanceType;
@@ -19,39 +20,40 @@ import logica.Propuesta.Propuesta;
 import java.util.Iterator;
 
 
-@jakarta.persistence.Entity
-@jakarta.persistence.Inheritance(strategy = InheritanceType.JOINED)
-@Entity("Usuarios")
+//@jakarta.persistence.Entity
+//@jakarta.persistence.Inheritance(strategy = InheritanceType.JOINED)
+@Entity(value="usuarios", useDiscriminator=true)
 public class Usuario {
     
-    @jakarta.persistence.Id //solo por ahora para que funciones con bd relaciona o mongo
+    //@jakarta.persistence.Id //solo por ahora para que funciones con bd relaciona o mongo
     @Id
     private String nickname;
     private String pass;
     private String nombre;
     private String apellido;
+    @Property("Email")
     private String email;
     private LocalDate fecha;
     private String rutaImg;
     
-    @ManyToMany
-    @JoinTable(
-        name = "usuario_seguidos",
-        joinColumns = @JoinColumn(name = "seguidor"),          // el que sigue
-        inverseJoinColumns = @JoinColumn(name = "seguido")     // al que sigo
-    )
-    @MapKey(name = "nickname")
-    @Reference
+//    @ManyToMany
+//    @JoinTable(
+//        name = "usuario_seguidos",
+//        joinColumns = @JoinColumn(name = "seguidor"),          // el que sigue
+//        inverseJoinColumns = @JoinColumn(name = "seguido")     // al que sigo
+//    )
+//    @MapKey(name = "nickname")
+    @Reference(lazy=false)
     private Map<String,Usuario> usuarioSeguido=new HashMap<>();
     
-    @ManyToMany
-    @JoinTable(
-        name = "propuesta_favorita",
-        joinColumns = @JoinColumn(name = "usuario"),          // el usuario
-        inverseJoinColumns = @JoinColumn(name = "propuesta")     // la prop favorita
-    )
-    @MapKey(name = "Titulo") // asigna 
-    @Reference
+//    @ManyToMany
+//    @JoinTable(
+//        name = "propuesta_favorita",
+//        joinColumns = @JoinColumn(name = "usuario"),          // el usuario
+//        inverseJoinColumns = @JoinColumn(name = "propuesta")     // la prop favorita
+//    )
+//    @MapKey(name = "Titulo") // asigna 
+    @Reference(lazy=false)
     private Map<String,Propuesta> propFavorita=new HashMap<>();
 
    
@@ -166,6 +168,7 @@ public class Usuario {
 
                     if(nodoActual.getValue() == usr)
                     {
+                        System.out.println("llego a remover?");
                         ct.remove();    //Se borra el nodo del usuario a dejar de seguir desde el iterator.
                         return true;
                     }

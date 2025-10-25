@@ -17,7 +17,7 @@ import logica.Propuesta.Propuesta;
 
 
 @jakarta.persistence.Entity
-
+@Entity
 public class Proponente extends Usuario{
     private String direccion;
     
@@ -28,7 +28,7 @@ public class Proponente extends Usuario{
     
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, orphanRemoval = true)
     @MapKey(name = "Titulo") 
-    @Reference(lazy = true)
+    @Reference(lazy = false)
     private Map<String,Propuesta> propCreadas=new HashMap<>();
 
     public Proponente() {
