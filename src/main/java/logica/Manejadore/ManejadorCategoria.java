@@ -1,4 +1,4 @@
-package persistencia;
+package logica.Manejadore;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import logica.DTO.DTOCategoria;
@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 import logica.Categoria.Categoria;
+import persistencia.PersistenciaManager;
 
 public class ManejadorCategoria {
 

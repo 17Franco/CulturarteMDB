@@ -1,5 +1,5 @@
 
-package persistencia;
+package logica.Manejadore;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -24,6 +24,7 @@ import logica.Usuario.Colaborador;
 import logica.Usuario.Proponente;
 import logica.Usuario.Usuario;
 import logica.DTO.Estado;
+import persistencia.PersistenciaManager;
 
 
 

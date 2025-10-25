@@ -29,10 +29,10 @@ public interface IController {
     boolean existeUsuario(String nick, String email);
     
     boolean emailUsado(String email);
-    
+
     boolean existe(String nick);
-    
-     List<String> ListaUsuarios();
+      
+    List<String> ListaUsuarios();
     
     List<String> ListaProponentes();
     
@@ -54,9 +54,10 @@ public interface IController {
     
     Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick);
     
+    
     //SON DE WEB (OTRO PROYECTO NO SE USAN ACA)
     void registroUsuario(String nickname, String pass, String nombre, String apellido, String email, LocalDate fecha, byte[] contenido,String nombreArchivo,boolean isProponente,String direccion,String web,String Biografia);
-    
+        
     boolean login(String nick,String Pass);
     
     boolean isProponente(String nick);
@@ -83,6 +84,7 @@ public interface IController {
     
     //Propuestas
     void altaPropuesta(String Titulo, String Descripcion, String Imagen, String Lugar, LocalDate Fecha, int Precio, int MontoTotal, LocalDate fechaPublicacio,List<TipoRetorno> Retorno, String cat, String usr,Estado est);
+    
     void modificarPropuesta(String titulo, String descripcion, String rutaImagen, String lugar, LocalDate fechaEvento,int precio, int montoTotal, List<TipoRetorno> retorno, String categoria, String usuarios, Estado estado);
     
     boolean existeProp(String Titulo);
@@ -154,6 +156,7 @@ public interface IController {
     //FIN CARGA DE DATOS
     
     //verificaciones y auxiliares
+    
     //WEB
     int string_A_Int_Con_verificacion(String input);
     //WEB

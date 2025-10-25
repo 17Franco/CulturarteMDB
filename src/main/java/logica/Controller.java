@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import persistencia.ManejadorPropuesta;
-import persistencia.ManejadorCategoria;
-import persistencia.ManejadorColaboracion;
+import logica.Manejadore.ManejadorPropuesta;
+import logica.Manejadore.ManejadorCategoria;
+import logica.Manejadore.ManejadorColaboracion;
 import logica.DTO.DTOCategoria;
 import logica.DTO.DTOColaborador;
 import logica.DTO.DTOProponente;
@@ -18,7 +18,7 @@ import logica.DTO.DTOUsuario;
 import logica.Colaboracion.Colaboracion;
 import logica.DTO.DTOColaboracion;
 import logica.Propuesta.Propuesta;
-import persistencia.ManejadorUsuario;
+import logica.Manejadore.ManejadorUsuario;
 import logica.DTO.TipoRetorno;
 import logica.DTO.DTOPropuesta;
 import logica.DTO.DTORegistro_Estado;
@@ -29,8 +29,7 @@ import logica.DTO.Estado;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import persistencia.ManejadorUsuarioMongo;
+import logica.Manejadore.ManejadorUsuarioMongo;
 import persistencia.PersistenciaMongo;
 
 public class Controller  implements IController {
@@ -59,10 +58,12 @@ public class Controller  implements IController {
            return (mUsuarioMongo.existe(nick) || mUsuarioMongo.emailUsado(email));
     }
     
+    @Override
     public boolean emailUsado(String email){
         return mUsuarioMongo.emailUsado(email);
     }
     
+    @Override
      public boolean existe(String nick){
             return mUsuarioMongo.existe(nick);
     }
@@ -100,30 +101,6 @@ public class Controller  implements IController {
      }
      
      @Override
-    public List<DTOUsuario>Seguidos(String nick){
-    
-        return mUsuario.getSeguidos(nick);
-    }
-    
-    @Override
-    public List<String> ListaSeguidosPorUsuario(String nick){
-
-        return mUsuario.listaSeguidos(nick);
-    }
-   
-    @Override
-    public boolean seguir(String nick1,String nick2){
-
-        return mUsuario.seguirUsr(nick1,nick2);
-
-    }
-     @Override
-     public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
-     {
-        return mUsuario.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
-     }
-
-    @Override
     //me crea un dtoProponente datos basicos
     public DTOProponente getDTOProponente(String nick) { 
         Proponente usr= (Proponente) mUsuarioMongo.getUsuario(nick);
@@ -142,6 +119,25 @@ public class Controller  implements IController {
            return resu;
     }
     
+    
+    @Override
+    public List<String> ListaSeguidosPorUsuario(String nick){
+
+        return mUsuarioMongo.listaSeguidos(nick);
+    }
+   
+    @Override
+    public boolean seguir(String nick1,String nick2){
+
+        return mUsuarioMongo.seguirUsr(nick1,nick2);
+
+    }
+    @Override
+    public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
+    {
+       return mUsuarioMongo.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
+    }
+ 
     @Override
     public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
 
@@ -150,16 +146,9 @@ public class Controller  implements IController {
 
      @Override
     public List<DTOColaboracion>  colaboraciones(String nick){
-           return mUsuario.getDTOColaboraciones(nick);
+           return mUsuarioMongo.getDTOColaboraciones(nick);
     }
-     
-     
-    @Override
-     public List<String> colaboradoresAPropuesta(String titulo){
-        return  mPropuesta.listColaboradores(titulo);
-     }
-    
-     
+
 //    Desde aca parece que no son usadas nunca
 //    
 //    public DTOColaboracion getDTOAporte(Colaboracion r,String titulo){
@@ -186,11 +175,7 @@ public class Controller  implements IController {
 //    Hasta aca 
      
     //Metodos De Usuarios (se usan en web no en servidor central) 
-    //web
-    @Override
-    public List<DTOPropuesta> getFavoritas(String nick){     
-        return mUsuario.getFavoritas(nick);
-    }
+    
     
     //web
     @Override
@@ -200,9 +185,20 @@ public class Controller  implements IController {
     //web
     @Override
     public boolean isProponente(String nick){
-        return mUsuarioMongo.isProponente(nick);
+        return mUsuario.isProponente(nick);
+    }
+  
+    //web
+    @Override
+    public List<DTOUsuario> getSeguidores(String nick){
+        return mUsuario.obtenerSeguidores(nick);
     }
     
+    //web
+    @Override
+    public List<DTOUsuario>Seguidos(String nick){
+        return mUsuario.getSeguidos(nick);
+    }
     //web
     public String obtenerPathImg(String nick,byte[] contenido,String nombreArchivo){
         if(!nombreArchivo.equals("")){
@@ -242,12 +238,6 @@ public class Controller  implements IController {
     }
     //web
     @Override
-    public List<DTOUsuario> getSeguidores(String nick){
-        return mUsuario.obtenerSeguidores(nick);
-    }
-    
-    //web
-    @Override
     public void registroUsuario(String nickname, String pass, String nombre, String apellido, String email, LocalDate fecha, byte[] contenido,String nombreArchivo,boolean isProponente,String direccion,String web,String Biografia){
         String ruta = obtenerPathImg(nickname,contenido,nombreArchivo);
         if(isProponente){
@@ -260,6 +250,7 @@ public class Controller  implements IController {
         }
     
     }
+    
     //web
     @Override
     public List<DTOUsuario> ListaDTOUsuarios(){
@@ -271,7 +262,11 @@ public class Controller  implements IController {
     
     return mUsuario.sigue(seguidor,Seguido);
     }
-    
+    //web
+    @Override
+    public List<DTOPropuesta> getFavoritas(String nick){     
+        return mUsuario.getFavoritas(nick);
+    }
      //web
     @Override
     public void marcarComoFavorita(String nickname, String tituloPropuesta) {
@@ -316,7 +311,10 @@ public class Controller  implements IController {
     {
         return mPropuesta.accionSobrePropuesta(nickUsuario, propuestaSel);
     }
-    
+    @Override
+     public List<String> colaboradoresAPropuesta(String titulo){
+        return  mPropuesta.listColaboradores(titulo);
+    }
     @Override
     public DTOPropuesta getPropuestaDTO(String propuestaSel)
     {
@@ -337,9 +335,9 @@ public class Controller  implements IController {
       public String estadoPropuestas(String titulo){
           return mPropuesta.obtenerEstado(titulo);
       }
-      //Fin Propuesta
+      
     
-      //Categoria
+    //Categoria
     @Override
     public boolean altaDeCategoria(DTOCategoria categoriaIngresada) 
     {
@@ -381,6 +379,7 @@ public class Controller  implements IController {
         propuestaEstado1.addAll(propuestaEstado2);
         return propuestaEstado1;
     }
+    
     @Override
     public int extenderOCancelarPropuesta(String accionUsuario,String tituloPropuesta)
     {
@@ -400,7 +399,7 @@ public class Controller  implements IController {
         
         return 0;
     }
-  
+    //web
     @Override
     public int accionesSobrePropuesta(String userNick, int permisos, String accionUsuario,String comentario, DTOPropuesta propuestaActual, String montoStr, String tipoRetorno)
     {
@@ -461,101 +460,6 @@ public class Controller  implements IController {
     }
     
     @Override
-    public int permisosSobrePropuesta(String userNick, String tipoUsuario, DTOPropuesta propuestaActual)
-    {
-        int permisos = 0;
-        
-        if (tipoUsuario != null && !userNick.equals("VISITANTE") && propuestaActual.getTitulo() != null) 
-        {
-            
-            if(!propuestaActual.usuarioHaComentadoSN(userNick))
-            {
-                permisos = accionSobrePropuesta(userNick, propuestaActual);  //Se obtienen permisos de usuario en propuesta.
-            }
-            
-            if(permisos == 3 && tipoUsuario.equals("Proponente"))   //Esto es por si un proponente visita otras props...
-            {
-                permisos = 0;   //Le quito el permiso de colaborar, lo dejo por si más adelante se agrega que puede o algo así.
-            }
-            
-        }
-        
-        return permisos;
-    }
-    
-    @Override
-    public boolean nuevoComentario(String comentario,String userNick,String tituloPropuesta)
-    {
-        if(userNick != null && mPropuesta.nuevoComentario(comentario, userNick, tituloPropuesta))
-        {
-            return true;
-        }
-        
-        return false;
-    }
-    
-    @Override
-    public void altaColaboracion(DTOColaboracion colaboracion){
-  
-        mColaboraciones.addColaboracion(colaboracion);
-        //actualizo despues de agregar la colaboracion 
-        mPropuesta.actualizarEstado(colaboracion.getPropuesta());
-        
-    }
-
-
-    public Set<DTOColaborador> ListarColaboradores() {
-        return mUsuario.listaColaboradores();
-    }
-
-  
-    
-    @Override
-    public void CancelarColaboracion(Long id){
-         mColaboraciones.deleteColaboracion(id);
-    }
-
-    @Override
-    public int getMontoRecaudado(String titulo){
-        return mPropuesta.getMontoRecaudado(titulo);
-    }
-    @Override
-    public boolean colaboracionExiste(String colaborador, String titulo){
-        
-        return mUsuario.existeColaboracion(colaborador, titulo); 
-    }
-    @Override
-    public Set<DTOColaboracion> getDTOColaboraciones(){
-        return mColaboraciones.getColaboraciones();
-        
-    }
-    @Override
-    public void cargarDatosPruebaProponente(){
-        mUsuario.cargarpProponente();
-        
-    
-    }
-    @Override
-    public void cargarDatosPruebaColaborador(){
-        mUsuario.cargarpColaboradores();
-    
-    }
-    @Override
-    public void cargarSeguidos(){
-        mUsuario.CargarSeguidos();
-    }
-    @Override
-    public void cargarPropuesta(){
-        mPropuesta.cargarPropuesta();
-    }
-    public void cargarCategorias(){
-        mCategoria.cargarCategorias();
-    }
-    
-    public void cargarColaboraciones(){
-        mColaboraciones.cargarDatosColaboracion();
-    }
-    @Override
     public int string_A_Int_Con_verificacion(String input)
     {
      //Retorna -1 si el usuario puso algo mal
@@ -582,13 +486,108 @@ public class Controller  implements IController {
         return Estado.formateoEstado(estado);
     }
     
+    //web
+    @Override
+    public int permisosSobrePropuesta(String userNick, String tipoUsuario, DTOPropuesta propuestaActual)
+    {
+        int permisos = 0;
+        
+        if (tipoUsuario != null && !userNick.equals("VISITANTE") && propuestaActual.getTitulo() != null) 
+        {
+            
+            if(!propuestaActual.usuarioHaComentadoSN(userNick))
+            {
+                permisos = accionSobrePropuesta(userNick, propuestaActual);  //Se obtienen permisos de usuario en propuesta.
+            }
+            
+            if(permisos == 3 && tipoUsuario.equals("Proponente"))   //Esto es por si un proponente visita otras props...
+            {
+                permisos = 0;   //Le quito el permiso de colaborar, lo dejo por si más adelante se agrega que puede o algo así.
+            }
+            
+        }
+        
+        return permisos;
+    }
+    //web
+    @Override
+    public boolean nuevoComentario(String comentario,String userNick,String tituloPropuesta)
+    {
+        if(userNick != null && mPropuesta.nuevoComentario(comentario, userNick, tituloPropuesta))
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    //COLABORACIONES METODOS
+    @Override
+    public void altaColaboracion(DTOColaboracion colaboracion){
+  
+        mColaboraciones.addColaboracion(colaboracion);
+        //actualizo despues de agregar la colaboracion 
+        mPropuesta.actualizarEstado(colaboracion.getPropuesta());
+        
+    }
+
+
+    public Set<DTOColaborador> ListarColaboradores() {
+        return mUsuario.listaColaboradores();
+    }
+
+    @Override
+    public void CancelarColaboracion(Long id){
+         mColaboraciones.deleteColaboracion(id);
+    }
+
+    @Override
+    public int getMontoRecaudado(String titulo){
+        return mPropuesta.getMontoRecaudado(titulo);
+    }
+    @Override
+    public boolean colaboracionExiste(String colaborador, String titulo){
+        
+        return mUsuario.existeColaboracion(colaborador, titulo); 
+    }
+    @Override
+    public Set<DTOColaboracion> getDTOColaboraciones(){
+        return mColaboraciones.getColaboraciones();
+        
+    }
+
+    //CARGA DE DATOS DE PRUEBA 
+    @Override
+    public void cargarDatosPruebaProponente(){
+        mUsuario.cargarpProponente();
+
+    }
+    @Override
+    public void cargarDatosPruebaColaborador(){
+        mUsuario.cargarpColaboradores();
+    
+    }
+    @Override
+    public void cargarSeguidos(){
+        mUsuario.CargarSeguidos();
+    }
+    @Override
+    public void cargarPropuesta(){
+        mPropuesta.cargarPropuesta();
+    }
+    public void cargarCategorias(){
+        mCategoria.cargarCategorias();
+    }
+    
+    public void cargarColaboraciones(){
+        mColaboraciones.cargarDatosColaboracion();
+    }
+    
+    //FIN NCARGA DE DATOS DE PRUEBA
     @Override
     public void cerrarAplicacion() {
         //System.out.println("estoy cerrando controller");
         PersistenciaMongo.cerrar();
         
     }
-
 }
-
-  
