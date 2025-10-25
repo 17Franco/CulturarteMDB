@@ -227,7 +227,6 @@ public class Controller  implements IController {
         return "";    
     }
     //web
-    @Override
     public byte[] getImg(String ruta) {
         String RUTA_IMAGENES = "/home/fran/Escritorio/Lab1PA";
         try{
@@ -516,10 +515,6 @@ public class Controller  implements IController {
          mColaboraciones.deleteColaboracion(id);
     }
 
-    @Override
-    public Set<DTOColaborador> ListarColaboradres() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     @Override
     public int getMontoRecaudado(String titulo){
         return mPropuesta.getMontoRecaudado(titulo);
