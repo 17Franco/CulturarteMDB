@@ -1,4 +1,4 @@
-package persistencia;
+package logica.Manejadore;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -12,6 +12,7 @@ import logica.Propuesta.Propuesta;
 import logica.Usuario.Colaborador;
 import logica.DTO.TipoRetorno;
 import logica.DTO.Estado;
+import persistencia.PersistenciaManager;
 
 
 public class ManejadorColaboracion {

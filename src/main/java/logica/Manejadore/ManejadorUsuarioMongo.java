@@ -1,52 +1,34 @@
 
-package persistencia;
+package logica.Manejadore;
 
 
-import dev.morphia.query.FindOptions;
-import dev.morphia.DeleteOptions;
-import dev.morphia.query.Sort;
+
 import dev.morphia.Datastore;
 import java.util.List;
-import java.util.ArrayList;
 import com.mongodb.MongoSocketException;
-
-
-
 import dev.morphia.query.filters.Filters;
-
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.Map;
 import java.util.Set;
-
 import java.util.TimeZone;
 import logica.Colaboracion.Colaboracion;
 import logica.DTO.DTOColaboracion;
 import logica.DTO.DTOColaborador;
-
 import logica.DTO.DTOProponente;
 import logica.DTO.DTOPropuesta;
-
 import logica.DTO.DTOUsuario;
 import logica.DTO.Estado;
 import logica.Propuesta.Propuesta;
-
 import logica.Usuario.Colaborador;
 import logica.Usuario.Proponente;
 import logica.Usuario.Usuario;
-
-
-
-
+import persistencia.PersistenciaMongo;
 
 public class ManejadorUsuarioMongo {
     
     private static ManejadorUsuarioMongo instancia = null;
-    
-    
 
     public ManejadorUsuarioMongo() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -56,7 +38,6 @@ public class ManejadorUsuarioMongo {
         
         return new ManejadorUsuarioMongo();
     }
-    
     
     public void addProponente(DTOProponente u){
         Proponente p = new Proponente(u); //por usarla puedo usar el dto directamente

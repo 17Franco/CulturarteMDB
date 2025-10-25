@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package persistencia;
+package logica.Manejadore;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -25,6 +25,7 @@ import logica.Usuario.Proponente;
 import logica.Usuario.Colaborador;
 import logica.DTO.Estado;
 import logica.DTO.TipoRetorno;
+import persistencia.PersistenciaManager;
 
 
 public class ManejadorPropuesta {
