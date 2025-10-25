@@ -190,13 +190,13 @@ public class ManejadorUsuario {
     
     //devuelvo una Intancia de Usuario
     public Usuario getUsuario(String nick) {
-         em = PersistenciaManager.getEntityManager();
-         try {
-             return em.find(Usuario.class, nick);
-         } finally {
-             em.close(); // se ejecuta SIEMPRE, haya error o no
-         }
-     }
+        em = PersistenciaManager.getEntityManager();
+        try {
+            return em.find(Usuario.class, nick);
+        } finally {
+            em.close(); // se ejecuta SIEMPRE, haya error o no
+        }
+    }
     // devuelvo dtoUusario con la info minima de los que sigue el usuario identificado por nick
     public List<DTOUsuario> getSeguidos(String nick){
     

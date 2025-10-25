@@ -52,6 +52,157 @@ public class Controller  implements IController {
         }
     }
     
+    
+    @Override
+    public boolean existeUsuario(String nick, String email) {
+           //return false; 
+           return (mUsuarioMongo.existe(nick) || mUsuarioMongo.emailUsado(email));
+    }
+    
+    public boolean emailUsado(String email){
+        return mUsuarioMongo.emailUsado(email);
+    }
+    
+     public boolean existe(String nick){
+            return mUsuarioMongo.existe(nick);
+    }
+    
+    @Override
+    public List<String> ListaUsuarios(){
+        List<String> aux = new ArrayList<>();
+        for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
+                aux.add(c.getNickname());
+        }
+       return aux;    
+    }
+    
+
+    @Override
+     public List<String> ListaProponentes(){
+         List<String> aux = new ArrayList<>();
+         for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
+            if (c instanceof DTOProponente){
+                 aux.add(c.getNickname());
+            }
+         }
+        return aux;    
+     }
+     
+     @Override
+     public List<String> ListaColaborador(){
+         List<String> aux = new ArrayList<>();
+         for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
+            if (c instanceof DTOColaborador){
+                 aux.add(c.getNickname());
+            }
+         }
+        return aux;    
+     }
+     
+     @Override
+    public List<DTOUsuario>Seguidos(String nick){
+    
+        return mUsuario.getSeguidos(nick);
+    }
+    
+    @Override
+    public List<String> ListaSeguidosPorUsuario(String nick){
+
+        return mUsuario.listaSeguidos(nick);
+    }
+   
+    @Override
+    public boolean seguir(String nick1,String nick2){
+
+        return mUsuario.seguirUsr(nick1,nick2);
+
+    }
+     @Override
+     public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
+     {
+        return mUsuario.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
+     }
+
+    @Override
+    //me crea un dtoProponente datos basicos
+    public DTOProponente getDTOProponente(String nick) { 
+        Proponente usr= (Proponente) mUsuarioMongo.getUsuario(nick);
+        DTOProponente resu=null;
+        if(usr!=null){
+            resu=new DTOProponente(usr);
+        }
+        return resu;
+    }
+    
+    @Override
+     public DTOColaborador getDTOColaborador(String nick) { 
+           Colaborador usr= (Colaborador) mUsuarioMongo.getUsuario(nick);
+           DTOColaborador resu=new DTOColaborador(usr);
+
+           return resu;
+    }
+    
+    @Override
+    public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
+
+        return mUsuarioMongo.getPropuestasCreadasPorProponente(nick);
+    }
+
+     @Override
+    public List<DTOColaboracion>  colaboraciones(String nick){
+           return mUsuario.getDTOColaboraciones(nick);
+    }
+     
+     
+    @Override
+     public List<String> colaboradoresAPropuesta(String titulo){
+        return  mPropuesta.listColaboradores(titulo);
+     }
+    
+     
+//    Desde aca parece que no son usadas nunca
+//    
+//    public DTOColaboracion getDTOAporte(Colaboracion r,String titulo){
+//        return new DTOColaboracion(r.getTipoRetorno(),r.getMonto(),r.getColaborador().getNickname(),titulo,r.getCreado());
+//    }
+//    
+//  
+//    public DTORegistro_Estado getDTORegistroEstado(Registro_Estado r){
+//        return new DTORegistro_Estado(r.getFechaReg(),r.getEstado());
+//    }
+//    
+//    devuelve un dtoPropuesta con el historial de estado y aportes Recibido
+//    public DTOPropuesta getDTOPropuesta(Propuesta p,DTOProponente prop){
+//            DTOPropuesta propuesta= new DTOPropuesta(p,prop);
+//            List<Registro_Estado> r=p.getHistorialEstados();
+//            List<Colaboracion> rA = p.getAporte();
+//            
+//            for(Registro_Estado re:r){
+//                propuesta.setHistorialEstados(getDTORegistroEstado(re));
+//            }
+//
+//            return propuesta;
+//    }
+//    Hasta aca 
+     
+    //Metodos De Usuarios (se usan en web no en servidor central) 
+    //web
+    @Override
+    public List<DTOPropuesta> getFavoritas(String nick){     
+        return mUsuario.getFavoritas(nick);
+    }
+    
+    //web
+    @Override
+    public boolean login(String nick,String Pass){
+        return mUsuario.verificarCredenciales(nick,Pass);
+    }
+    //web
+    @Override
+    public boolean isProponente(String nick){
+        return mUsuarioMongo.isProponente(nick);
+    }
+    
     //web
     public String obtenerPathImg(String nick,byte[] contenido,String nombreArchivo){
         if(!nombreArchivo.equals("")){
@@ -110,187 +261,40 @@ public class Controller  implements IController {
         }
     
     }
+    //web
     @Override
     public List<DTOUsuario> ListaDTOUsuarios(){
     return mUsuario.getListDTOUsuario();
     }
-    
+    //web
     @Override
     public boolean sigueAUsuario(String seguidor,String Seguido){
     
     return mUsuario.sigue(seguidor,Seguido);
     }
     
-    @Override
-    public boolean existeUsuario(String nick, String email) {
-           //return false; 
-           return (mUsuarioMongo.existe(nick) || mUsuarioMongo.emailUsado(email));
-    }
-    
-    public boolean emailUsado(String email){
-        return mUsuarioMongo.emailUsado(email);
-    }
-    
-     public boolean existe(String nick){
-            return mUsuarioMongo.existe(nick);
-    }
-     
-    @Override
-    public List<DTOUsuario>Seguidos(String nick){
-    
-        return mUsuario.getSeguidos(nick);
-    }
-    
-    @Override
-    public List<String> ListaUsuarios(){
-        List<String> aux = new ArrayList<>();
-        for (DTOUsuario c : mUsuarioMongo.getUsuarios().values()){
-                aux.add(c.getNickname());
-        }
-       return aux;    
-    }
-     
-    @Override
-     public List<String> ListaProponentes(){
-         List<String> aux = new ArrayList<>();
-         for (DTOUsuario c : mUsuario.getUsuarios().values()){
-            if (c instanceof DTOProponente){
-                 aux.add(c.getNickname());
-            }
-         }
-        return aux;    
-     }
-     @Override
-     public List<String> ListaColaborador(){
-         List<String> aux = new ArrayList<>();
-         for (DTOUsuario c : mUsuario.getUsuarios().values()){
-            if (c instanceof DTOColaborador){
-                 aux.add(c.getNickname());
-            }
-         }
-        return aux;    
-     }
+     //web
     @Override
     public void marcarComoFavorita(String nickname, String tituloPropuesta) {
         ManejadorUsuario manejadorU = ManejadorUsuario.getInstance();
         manejadorU.marcarComoFavorita(nickname, tituloPropuesta);
     }
+    //web
     @Override
     public void quitarFavorita(String nickname, String tituloPropuesta) {
         ManejadorUsuario manejadorU = ManejadorUsuario.getInstance();
         manejadorU.quitarFavorita(nickname, tituloPropuesta);
     }
+    //web
     @Override
     public boolean esFavorita(String nickname, String tituloPropuesta) {
         ManejadorUsuario manejadorU = ManejadorUsuario.getInstance();
         return manejadorU.esFavorita(nickname, tituloPropuesta);
     }
-     @Override
-     public List<String> ListaSeguidosPorUsuario(String nick){
-        /* List<String> aux = new ArrayList<>();
-         Usuario usuario = mUsuario.buscador(nick);
-         if (usuario != null && usuario.getUsuarioSeguido() != null) {
-            for(Usuario u:usuario.getUsuarioSeguido().values()){
-                aux.add(u.getNickname());
-            }
-         }*/
-         return mUsuario.listaSeguidos(nick);
-     }
-     @Override
-    public List<DTOColaboracion>  colaboraciones(String nick){
-           return mUsuario.getDTOColaboraciones(nick);
-    }
-     
-     
-     @Override
-      public List<String> colaboradoresAPropuesta(String titulo){
-         return  mPropuesta.listColaboradores(titulo);
-      }
-     
-     @Override
-     public boolean seguir(String nick1,String nick2){
-         
-         return mUsuario.seguirUsr(nick1,nick2);
-
-     }
-     @Override
-     public boolean unFollowUser(String usuarioActual, String usuarioToUnfollow)
-     {
-        return mUsuario.dejarDeSeguirUsuario(usuarioActual, usuarioToUnfollow);  
-     }
-     
-    // Funciones que devuelven Distintos DTO 
-    public DTOColaboracion getDTOAporte(Colaboracion r,String titulo){
-        return new DTOColaboracion(r.getTipoRetorno(),r.getMonto(),r.getColaborador().getNickname(),titulo,r.getCreado());
-    }
     
-  
-    public DTORegistro_Estado getDTORegistroEstado(Registro_Estado r){
-        return new DTORegistro_Estado(r.getFechaReg(),r.getEstado());
-    }
+    //FIN METODOS USUARIOS
     
-    //devuelve un dtoPropuesta con el historial de estado y aportes Recibido
-    public DTOPropuesta getDTOPropuesta(Propuesta p,DTOProponente prop){
-            DTOPropuesta propuesta= new DTOPropuesta(p,prop);
-            List<Registro_Estado> r=p.getHistorialEstados();
-            List<Colaboracion> rA = p.getAporte();
-            
-            for(Registro_Estado re:r){
-                propuesta.setHistorialEstados(getDTORegistroEstado(re));
-            }
-
-            return propuesta;
-    }
     
-    @Override
-    //me crea un dtoProponente datos basicos
-    public DTOProponente getDTOProponente(String nick) { 
-           Proponente usr= (Proponente) mUsuario.getUsuario(nick);
-          DTOProponente resu=new DTOProponente(usr);
-          
-          //Map<String,DTOPropuesta> p=mUsuario.getPropuestasCreadas(resu);
-           
-          //resu.setPropCreadas(p);
-           
-           return resu;
-    }
-
-    public Set<DTOPropuesta> getPropuestasCreadasPorProponente(String nick){
-
-        return mUsuario.getPropuestasCreadasPorProponente(nick);
-    }
-
- 
-    @Override
-     public DTOColaborador getDTOColaborador(String nick) { 
-           Colaborador usr= (Colaborador) mUsuario.getUsuario(nick);
-           DTOColaborador resu=new DTOColaborador(usr);
-
-           return resu;
-    }
-     //Fin de Devolucion de DTO
-    
-     
-       
-    //web
-    @Override
-    public List<DTOPropuesta> getFavoritas(String nick){
-        
-        return mUsuario.getFavoritas(nick);
-    
-    }
-    
-    //web
-    @Override
-    public boolean login(String nick,String Pass){
-        return mUsuario.verificarCredenciales(nick,Pass);
-    }
-    //web
-    @Override
-    public boolean isProponente(String nick){
-        return mUsuarioMongo.isProponente(nick);
-    }
-   
     @Override
     public void altaPropuesta(String Titulo, String Descripcion, String Imagen, String Lugar, LocalDate Fecha, int Precio, int MontoTotal,LocalDate fechaPublicacio, List<TipoRetorno> Retorno, String cat, String usr,Estado est) {
         
